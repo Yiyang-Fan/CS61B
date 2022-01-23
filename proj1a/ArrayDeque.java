@@ -1,5 +1,3 @@
-import org.checkerframework.checker.units.qual.A;
-
 public class ArrayDeque<T> {
 
     private int size;
@@ -111,6 +109,10 @@ public class ArrayDeque<T> {
         capacity = (int) (capacity / 2);
         startIndex = 0;
         endIndex = size + 1;
+    }
+
+    public boolean isEmpty() {
+        return (size == 0);
     }
 
 }
