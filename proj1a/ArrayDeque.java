@@ -69,7 +69,7 @@ public class ArrayDeque<T> {
         return size;
     }
 
-    public void allPrint() {
+    private void allPrint() {
         for (int i = 0; i < capacity; i++) {
             System.out.printf("item: %d, index: %d \n",
                     items[i], i);
@@ -78,7 +78,7 @@ public class ArrayDeque<T> {
         System.out.printf("startIndex: %d,  endIndex: %d \n", startIndex, endIndex);
     }
 
-    public void itemPrint() {
+    private void itemPrint() {
         for (int i = 0; i < size; i++) {
             System.out.printf("%d  ", this.get(i));
         }

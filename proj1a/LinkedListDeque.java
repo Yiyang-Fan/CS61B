@@ -80,4 +80,8 @@ public class LinkedListDeque<T> {
         return result.item;
     }
 
+    public T getRecursive(int index) {
+        return get(index);
+    }
+
 }
