@@ -1,5 +1,3 @@
-package deque;
-
 import org.checkerframework.checker.units.qual.A;
 
 public class ArrayDeque<T> {
