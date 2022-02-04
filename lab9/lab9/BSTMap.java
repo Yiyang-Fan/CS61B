@@ -1,109 +1,181 @@
-package lab9;
+package bstmap;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
-/**
- * Implementation of interface Map61B with BST as core data structure.
- *
- * @author Your name here
- */
-public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
-
-    private class Node {
-        /* (K, V) pair stored in this Node. */
-        private K key;
-        private V value;
-
-        /* Children of this Node. */
-        private Node left;
-        private Node right;
-
-        private Node(K k, V v) {
-            key = k;
-            value = v;
-        }
+public class BSTMap<K extends Comparable, V> implements Map61B<K, V> {
+    @Override
+    public Iterator iterator() {
+        return null;
     }
 
-    private Node root;  /* Root node of the tree. */
-    private int size; /* The number of key-value pairs in the tree */
+    private K key;
+    private V value;
+    private int size;
+    private BSTMap left, right;
 
-    /* Creates an empty BSTMap. */
     public BSTMap() {
-        this.clear();
+        size = 0;
+        key = null;
+        value = null;
+        left = null;
+        right = null;
     }
 
-    /* Removes all of the mappings from this map. */
+    public BSTMap(K k, V v, BSTMap l, BSTMap r) {
+        size = 0;
+        key = k;
+        value = v;
+        left = l;
+        right = r;
+    }
     @Override
     public void clear() {
-        root = null;
+        key = null;
+        value = null;
+        left = null;
+        right = null;
         size = 0;
     }
 
-    /** Returns the value mapped to by KEY in the subtree rooted in P.
-     *  or null if this map contains no mapping for the key.
-     */
-    private V getHelper(K key, Node p) {
-        throw new UnsupportedOperationException();
+    @Override
+    public boolean containsKey(K key) {
+        if (this.key == null) {
+            return false;
+        }
+        if (this.key.compareTo(key) == 0) {
+            return true;
+        } else if (this.key.compareTo(key) > 0) {
+            if (this.left != null) {
+                return this.left.containsKey(key);
+            }
+        } else if (this.key.compareTo(key) < 0) {
+            if (this.right != null) {
+                return this.right.containsKey(key);
+            }
+        }
+        return false;
     }
 
-    /** Returns the value to which the specified key is mapped, or null if this
-     *  map contains no mapping for the key.
-     */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        if (!this.containsKey(key)) {
+            return null;
+        }
+        if (this.key.compareTo(key) == 0) {
+            return this.value;
+        } else if (this.key.compareTo(key) > 0) {
+            return (V) this.left.get(key);
+        } else {
+            return (V) this.right.get(key);
+        }
     }
 
-    /** Returns a BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
-      * Or if p is null, it returns a one node BSTMap containing (KEY, VALUE).
-     */
-    private Node putHelper(K key, V value, Node p) {
-        throw new UnsupportedOperationException();
-    }
-
-    /** Inserts the key KEY
-     *  If it is already present, updates value to be VALUE.
-     */
-    @Override
-    public void put(K key, V value) {
-        throw new UnsupportedOperationException();
-    }
-
-    /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
-    //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
+    @Override
+    public void put(K key, V value) {
+        this.size += 1;
+        if (this.key == null) {
+            this.key = key;
+            this.value = value;
+        } else if (this.key.compareTo(key) < 0) {
+            if (this.right == null) {
+                this.right = new BSTMap(key, value, null, null);
+            } else {
+                this.right.put(key, value);
+            }
+        } else if (this.key.compareTo(key) > 0) {
+            if (this.left == null) {
+                this.left = new BSTMap(key, value, null, null);
+            } else {
+                this.left.put(key, value);
+            }
+        }
+    }
 
-    /* Returns a Set view of the keys contained in this map. */
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> s = new TreeSet<>();
+        BFS(this, s);
+        return s;
     }
 
-    /** Removes KEY from the tree if present
-     *  returns VALUE removed,
-     *  null on failed removal.
-     */
+    private void BFS(BSTMap<K, V> m, Set<K> s) {
+        if (m != null && m.key != null) {
+            s.add(m.key);
+            BFS(m.left, s);
+            BFS(m.right, s);
+        }
+    }
+
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        if (this.containsKey(key)) {
+            this.size -= 1;
+            if (this.key == null) {
+                return null;
+            } else if (this.key.compareTo(key) < 0) {
+                if (this.right != null) {
+                    return (V) this.right.remove(key);
+                }
+            } else if (this.key.compareTo(key) > 0) {
+                if (this.left != null) {
+                    return (V) this.left.remove(key);
+                }
+            } else {
+                V v = this.value;
+                if (this.left == null) {
+                    if (this.right == null) {
+                        this.key = null;
+                        this.value = null;
+                        this.left = null;
+                        this.right = null;
+                    } else {
+                        this.key = (K) this.right.key;
+                        this.value = (V) this.right.value;
+                        this.left = this.right.left;
+                        this.right = this.right.right;
+                    }
+
+                } else if (this.right == null) {
+                    if (this.left == null) {
+                        this.key = null;
+                        this.value = null;
+                        this.left = null;
+                        this.right = null;
+                    } else {
+                        this.key = (K) this.left.key;
+                        this.value = (V) this.left.value;
+                        this.right = this.left.right;
+                        this.left = this.left.left;
+                    }
+                } else {
+                    this.right = swapSmallest(this.right, this);
+                }
+                return v;
+            }
+        }
+        return null;
     }
 
-    /** Removes the key-value entry for the specified key only if it is
-     *  currently mapped to the specified value.  Returns the VALUE removed,
-     *  null on failed removal.
-     **/
+    private BSTMap swapSmallest(BSTMap t1, BSTMap t2) {
+        if (t1.left == null) {
+            t2.key = t1.key;
+            t2.value = t1.value;
+            return t1.right;
+        } else {
+            t1.left = swapSmallest(t1.left, t2);
+            return t1;
+        }
+    }
     @Override
     public V remove(K key, V value) {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public Iterator<K> iterator() {
-        throw new UnsupportedOperationException();
-    }
 }
