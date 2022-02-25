@@ -3,14 +3,17 @@ package hw2;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    WeightedQuickUnionUF FULL;
-    WeightedQuickUnionUF PERC;
-    int[][] OPEN;
-    int numOpen;
-    int indUp;
-    int indDown;
-    int N;
+    private WeightedQuickUnionUF FULL;
+    private WeightedQuickUnionUF PERC;
+    private int[][] OPEN;
+    private int numOpen;
+    private int indUp;
+    private int indDown;
+    private int N;
     public Percolation(int N) {
+        if (N <= 0) {
+            throw new IllegalArgumentException("N should be larger than 0");
+        }
         FULL = new WeightedQuickUnionUF(N * N + 1);
         PERC = new WeightedQuickUnionUF(N * N + 2);
         OPEN = new int[N][N];
