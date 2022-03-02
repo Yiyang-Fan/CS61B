@@ -89,6 +89,9 @@ public class Board implements WorldState {
     }
 
     public boolean equals(Object y) {
+        if (size() != ((Board) y).size()) {
+            return false;
+        }
         for (int i = 0; i < size(); i++) {
             for (int j = 0; j < size(); j++) {
                 if (tileAt(i, j) != ((Board) y).tileAt(i, j)) {
