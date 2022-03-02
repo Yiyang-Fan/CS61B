@@ -106,7 +106,9 @@ public class Board implements WorldState {
         int dist = 0;
         for (int i = 0; i < size(); i++) {
             for (int j = 0; j < size(); j++) {
-                if (tileAt(i, j) != i * size() + j + 1) {
+                if (tileAt(i, j) == BLANK) {
+                    continue;
+                } else if (tileAt(i, j) != i * size() + j + 1) {
                     dist += 1;
                 }
             }
@@ -129,4 +131,5 @@ public class Board implements WorldState {
         }
         return dist;
     }
+
 }
