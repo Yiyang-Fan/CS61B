@@ -84,7 +84,7 @@ public class Board implements WorldState {
         return neighbors;
     }
 
-    private int size() {
+    public int size() {
         return tiles.length;
     }
 
