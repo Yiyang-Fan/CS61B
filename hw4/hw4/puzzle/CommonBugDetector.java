@@ -6,7 +6,7 @@ import java.util.Objects;
 
 /**
  * Created by hug. See https://goo.gl/MVL8up for details on these puzzles.
- */
+*/
 public class CommonBugDetector {
     public static class CommonBugPuzzleState implements WorldState {
         private char name;
