@@ -40,7 +40,7 @@ public class TestComplexOomage {
     /**/
     @Test
     public void testWithDeadlyParams() {
-        List<Oomage> deadlyList = new ArrayList<>();
+        List<Oomage> deadlyList = new ArrayList<>(1000);
         // Your code here.
         for (int k = 0; k < 1000; k++) {
             int N = StdRandom.uniform(1, 10);
@@ -48,7 +48,7 @@ public class TestComplexOomage {
             for (int i = 0; i < N; i += 1) {
                 params.add(1);
             }
-            deadlyList.set(k, new ComplexOomage(params));
+            deadlyList.add(new ComplexOomage(params));
         }
         assertTrue(OomageTestUtility.haveNiceHashCodeSpread(deadlyList, 10));
     }
