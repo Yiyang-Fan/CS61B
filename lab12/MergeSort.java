@@ -72,6 +72,9 @@ public class MergeSort {
             Queue<Item> items) {
         // Your code here!
         Queue<Queue<Item>> queues = makeSingleItemQueues(items);
+        if (queues.size() == 0 || queues.size() == 1) {
+            return items;
+        }
         while (queues.size() > 1) {
             int oldSize = queues.size();
             for (int i = 0; i < oldSize; i += 2) {
