@@ -1,3 +1,5 @@
+import jh61b.junit.In;
+
 /**
  * Class with 2 ways of doing Counting sort, one naive way and one "better" way
  *
@@ -68,10 +70,10 @@ public class CountingSort {
     public static int[] betterCountingSort(int[] arr) {
         // TODO make counting sort work with arrays containing negative numbers.
         int max = Integer.MIN_VALUE;
-        int min = 0;
+        int min = Integer.MAX_VALUE;
         for (int i : arr) {
-            max = max > i ? max : i;
-            min = min < i ? min : i;
+            max = max >= i ? max : i;
+            min = min <= i ? min : i;
         }
 
         // gather all the counts for each value
