@@ -1,15 +1,12 @@
 import edu.princeton.cs.algs4.Picture;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class SeamCarver {
     private Picture picture;
     private int width;
     private int height;
 
-    public static void main(String[] args) {
-        System.out.println(-1 % 7);
-    }
     public SeamCarver(Picture picture) {
         this.picture = picture;
         width = picture.width();
@@ -17,7 +14,8 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        return picture;
+        Picture r = new Picture(picture);
+        return r;
     }
     public int width() {
         return width;
@@ -50,6 +48,12 @@ public class SeamCarver {
         int[] result = new int[height];
         for (int col = 0; col < width; col++) {
             M[col][0] = energy(col, 0);
+        }
+        if (width == 1) {
+            for (int i = 0; i < height; i++) {
+                result[i] = 0;
+            }
+            return result;
         }
         for (int row = 1; row < height; row++) {
             for (int col = 0; col < width; col++) {
@@ -89,6 +93,13 @@ public class SeamCarver {
         return result;
     }
     public int[] findHorizontalSeam() {
+        if (height == 1) {
+            int[] result = new int[width];
+            for (int i = 0; i < width; i++) {
+                result[i] = 0;
+            }
+            return result;
+        }
         Picture temp = new Picture(height, width);
         for (int col = 0; col < temp.width(); col++) {
             for (int row = 0; row < temp.height(); row++) {
