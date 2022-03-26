@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.Picture;
-
 import java.awt.Color;
 
 public class SeamCarver {
@@ -14,7 +13,12 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        Picture r = new Picture(picture);
+        Picture r = new Picture(picture.width(), picture.height());
+        for (int col = 0; col < picture.width(); col++) {
+            for (int row = 0; row < picture.height(); row++) {
+                r.set(col, row, picture.get(col, row));
+            }
+        }
         return r;
     }
     public int width() {
