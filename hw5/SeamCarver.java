@@ -13,13 +13,7 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        Picture r = new Picture(picture.width(), picture.height());
-        for (int col = 0; col < picture.width(); col++) {
-            for (int row = 0; row < picture.height(); row++) {
-                r.set(col, row, picture.get(col, row));
-            }
-        }
-        return r;
+        return new Picture(this.picture);
     }
     public int width() {
         return width;
