@@ -39,7 +39,7 @@ public class Router {
         class FringeComp implements Comparator<Long> {
             @Override
             public int compare(Long o1, Long o2) {
-                double t = distTo.get(o1) + g.distance(o1, dest) - distTo.get(o2) + g.distance(o2, dest);
+                double t = distTo.get(o1) + g.distance(o1, dest) - distTo.get(o2) - g.distance(o2, dest);
                 if (t > 0) {
                     return 1;
                 } else if (t == 0) {
@@ -54,6 +54,7 @@ public class Router {
         fringe.add(start);
         while (!fringe.isEmpty()) {
             long decided = fringe.remove();
+
             marked.add(decided);
             if (decided == dest) {
                 find = true;
@@ -64,7 +65,7 @@ public class Router {
                     if (!distTo.containsKey(t)) {
                         distTo.put(t, Double.MAX_VALUE);
                     }
-                    double dist = g.distance(t, dest) + distTo.get(decided);
+                    double dist = distTo.get(decided) + g.distance(t, decided);
                     if (dist < distTo.get(t)) {
                         distTo.put(t, dist);
                         edgeTo.put(t, decided);
@@ -125,7 +126,7 @@ public class Router {
 
         /** Default name for an unknown way. */
         public static final String UNKNOWN_ROAD = "unknown road";
-        
+
         /** Static initializer. */
         static {
             DIRECTIONS[START] = "Start";
