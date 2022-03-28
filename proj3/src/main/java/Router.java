@@ -34,7 +34,6 @@ public class Router {
         List<Long> result = new LinkedList<>();
         distTo.put(start, 0.0);
         edgeTo.put(start, start);
-        Set<Long> marked = new HashSet<>();
 
         class FringeComp implements Comparator<Long> {
             @Override
@@ -52,24 +51,21 @@ public class Router {
         PriorityQueue<Long> fringe = new PriorityQueue<>(new FringeComp());
 
         fringe.add(start);
-        while (!fringe.isEmpty()) {
+        while (!fringe.isEmpty() && !find) {
             long decided = fringe.remove();
 
-            marked.add(decided);
             if (decided == dest) {
                 find = true;
-                break;
             }
-            for (long t : g.getNode(decided).adj()) {
-                if (!marked.contains(t)) {
-                    if (!distTo.containsKey(t)) {
-                        distTo.put(t, Double.MAX_VALUE);
-                    }
-                    double dist = distTo.get(decided) + g.distance(t, decided);
-                    if (dist < distTo.get(t)) {
-                        distTo.put(t, dist);
-                        edgeTo.put(t, decided);
-                    }
+            for (long t : g.adjacent(decided)) {
+                if (!distTo.containsKey(t)) {
+                    distTo.put(t, Double.MAX_VALUE);
+                }
+                double dist = distTo.get(decided) + g.distance(t, decided);
+                if (dist < distTo.get(t)) {
+                    distTo.put(t, dist);
+                    edgeTo.put(t, decided);
+                    fringe.remove(t);
                     fringe.add(t);
                 }
             }
