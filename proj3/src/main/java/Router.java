@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +11,7 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
+
     /**
      * Return a List of longs representing the shortest path from the node
      * closest to a start location and the node closest to the destination
@@ -25,7 +25,67 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        Map<Long, Double> distTo = new HashMap<>();
+        Map<Long, Long> edgeTo = new HashMap<>();
+        long start = g.closest(stlon, stlat);
+        long dest = g.closest(destlon, destlat);
+        boolean find = false;
+        Stack<Long> tempR = new Stack<>();
+        List<Long> result = new LinkedList<>();
+        distTo.put(start, 0.0);
+        edgeTo.put(start, start);
+        Set<Long> marked = new HashSet<>();
+
+        class FringeComp implements Comparator<Long> {
+            @Override
+            public int compare(Long o1, Long o2) {
+                double t = distTo.get(o1) + g.distance(o1, dest) - distTo.get(o2) + g.distance(o2, dest);
+                if (t > 0) {
+                    return 1;
+                } else if (t == 0) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            }
+        }
+        PriorityQueue<Long> fringe = new PriorityQueue<>(new FringeComp());
+
+        fringe.add(start);
+        while (!fringe.isEmpty()) {
+            long decided = fringe.remove();
+            marked.add(decided);
+            if (decided == dest) {
+                find = true;
+                break;
+            }
+            for (long t : g.getNode(decided).adj()) {
+                if (!marked.contains(t)) {
+                    if (!distTo.containsKey(t)) {
+                        distTo.put(t, Double.MAX_VALUE);
+                    }
+                    double dist = g.distance(t, dest) + distTo.get(decided);
+                    if (dist < distTo.get(t)) {
+                        distTo.put(t, dist);
+                        edgeTo.put(t, decided);
+                    }
+                    fringe.add(t);
+                }
+            }
+        }
+
+        if (find) {
+            long t = dest;
+            tempR.push(t);
+            while (t != start) {
+                t = edgeTo.get(t);
+                tempR.push(t);
+            }
+            while (!tempR.isEmpty()) {
+                result.add(tempR.pop());
+            }
+        }
+        return result;
     }
 
     /**

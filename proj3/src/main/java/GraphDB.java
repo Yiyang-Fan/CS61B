@@ -1,4 +1,6 @@
 import org.xml.sax.SAXException;
+//import sun.awt.image.ImageWatched;
+//import sun.awt.image.ImageWatched;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,7 +8,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -20,6 +22,15 @@ import java.util.ArrayList;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
+    private final Map<Long, Node> nodes = new HashMap<>();
+    private final Map<Long, Way> ways = new HashMap<>();
+    private final Map<Long, Location> locations = new HashMap<>();
+
+    // Add an adjacent node o to this node
+    public void adjTo(long t, long o) {
+        nodes.get(t).addAdj(o);
+        nodes.get(o).addAdj(t);
+    }
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -42,6 +53,43 @@ public class GraphDB {
         clean();
     }
 
+    public void addNode(long id, double lat, double lon, long version) {
+        nodes.put(id, new Node(id, lat, lon, version));
+    }
+    public Node getNode(long id) {
+        return nodes.get(id);
+    }
+
+    public void addLoc(long id, String name) {
+        locations.put(id, new Location(id, name));
+    }
+    public Location getLoc(long id) {
+        return locations.get(id);
+    }
+
+    public void addWay(long id, long version) {
+        ways.put(id, new Way(id, version));
+    }
+
+    public Way getWay(long id) {
+        return ways.get(id);
+    }
+
+
+    public void makeAdj(LinkedList<Long> nodeInWay, long id) {
+        Iterator<Long> itr = nodeInWay.iterator();
+        if (itr.hasNext()) {
+            Long t1 = itr.next();
+            nodes.get(t1).addWay(id);
+            Long t2;
+            while (itr.hasNext()) {
+                t2 = itr.next();
+                adjTo(t1, t2);
+                nodes.get(t2).addWay(id);
+                t1 = t2;
+            }
+        }
+    }
     /**
      * Helper to process strings into their "cleaned" form, ignoring punctuation and capitalization.
      * @param s Input string.
@@ -58,6 +106,15 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
+        Set<Long> temp = new HashSet<>();
+        for (long nid: nodes.keySet()) {
+            if (!nodes.get(nid).connectedToOther()) {
+                temp.add(nid);
+            }
+        }
+        for (long nid: temp) {
+            nodes.remove(nid);
+        }
     }
 
     /**
@@ -66,7 +123,7 @@ public class GraphDB {
      */
     Iterable<Long> vertices() {
         //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return nodes.keySet();
     }
 
     /**
@@ -75,7 +132,7 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        return nodes.get(v).adj();
     }
 
     /**
@@ -136,7 +193,16 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        long ind = -1;
+        double dist = Double.MAX_VALUE;
+        for (long nid : nodes.keySet()) {
+            Node t = nodes.get(nid);
+            if (distance(lon, lat, t.lon(), t.lat()) < dist) {
+                ind = nid;
+                dist = distance(lon, lat, t.lon(), t.lat());
+            }
+        }
+        return ind;
     }
 
     /**
@@ -145,7 +211,7 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        return nodes.get(v).lon();
     }
 
     /**
@@ -154,6 +220,6 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        return nodes.get(v).lat();
     }
 }
